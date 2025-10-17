@@ -2,13 +2,10 @@ import React, { createContext, useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
-// Create an axios instance for API calls
 const api = axios.create({
-  baseURL: '/api/v1', // Your backend's API prefix
-  withCredentials: true // Important for sending cookies
+  baseURL: '/api/v1',
+  withCredentials: true
 });
-
-// Export the api instance so other components can use it
 export { api };
 
 const AuthContext = createContext();
@@ -19,10 +16,9 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check if the user is already logged in when the app loads
     const checkLoggedIn = async () => {
       try {
-        const { data } = await api.get('/auth/me'); // Endpoint to get current user
+        const { data } = await api.get('/auth/me');
         if (data.success) {
           setUser(data.user);
           setIsAuthenticated(true);
@@ -47,26 +43,39 @@ export const AuthProvider = ({ children }) => {
       }
     } catch (error) {
       toast.error(error.response?.data?.message || 'Login failed!');
-      return { success: false, message: error.response?.data?.message };
+      return { success: false };
     }
   };
 
-  const registerUser = async (name, email, password) => {
+  // --- THIS FUNCTION IS NOW CORRECTED ---
+  const registerUser = async (name, email, password, avatar) => {
     try {
-      const { data } = await api.post('/auth/register', { name, email, password });
+      // It now correctly sends the avatar in the request body
+      const { data } = await api.post('/auth/register', { name, email, password, avatar });
       if (data.success) {
-        toast.success(data.message);
+        toast.success("Registration successful! Please check your email for an OTP.");
         return { success: true };
       }
     } catch (error) {
       toast.error(error.response?.data?.message || 'Registration failed!');
-      return { success: false, message: error.response?.data?.message };
+      return { success: false };
+    }
+  };
+
+  const verifyOtp = async (email, otp) => {
+    try {
+      const { data } = await api.post('/auth/verify-otp', { email, otp });
+      if (data.success) {
+        return { success: true };
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'OTP verification failed!');
+      return { success: false };
     }
   };
 
   const logoutUser = async () => {
     try {
-      // Your backend uses a POST route for logout
       await api.post('/auth/logout');
       setUser(null);
       setIsAuthenticated(false);
@@ -77,13 +86,13 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, loading, loginUser, registerUser, logoutUser }}>
+    <AuthContext.Provider value={{ user, isAuthenticated, loading, loginUser, registerUser, logoutUser, verifyOtp }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
-// Custom hook to use the AuthContext
 export const useAuth = () => {
   return useContext(AuthContext);
 };
+
