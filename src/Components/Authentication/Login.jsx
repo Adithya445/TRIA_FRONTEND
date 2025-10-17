@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff, Mail, Lock, User, Shield } from 'lucide-react';
+import { useAuth } from '../../contexts/authcontext'; // 1. IMPORT the useAuth hook
 
 export default function LoginPage() {
+  // 2. GET the login and register functions from our context
+  const { loginUser, registerUser } = useAuth(); 
+
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -12,10 +16,6 @@ export default function LoginPage() {
   });
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
-
-  // Predetermined admin credentials
-  const ADMIN_EMAIL = 'admin@interiit.tech';
-  const ADMIN_PASSWORD = 'admin123';
   
   // Allowed email domains
   const ALLOWED_DOMAINS = ['interiit.tech', 'iit.ac.in', 'iitkgp.ac.in'];
@@ -56,6 +56,7 @@ export default function LoginPage() {
     return Object.keys(newErrors).length === 0;
   };
 
+  // 3. THIS IS THE UPDATED FUNCTION
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -63,24 +64,26 @@ export default function LoginPage() {
 
     setIsLoading(true);
 
-    // Simulate API call
-    setTimeout(() => {
+    try {
       if (isLogin) {
-        // Check for admin login
-        if (formData.email === ADMIN_EMAIL && formData.password === ADMIN_PASSWORD) {
-          alert('✅ Admin Login Successful!\n\nYou have admin privileges to delete any comments.');
-          // In real app: store JWT token with admin role
-        } else {
-          alert('✅ Login Successful!\n\nWelcome back!');
-          // In real app: call login API and store JWT token
-        }
+        // Call the login function from the context
+        await loginUser(formData.email, formData.password);
+        // The AuthContext and ProtectedRoute will handle navigation automatically
       } else {
-        alert('✅ Registration Successful!\n\nYou can now login with your credentials.');
-        setIsLogin(true);
-        setFormData({ email: '', password: '', name: '', confirmPassword: '' });
+        // Call the register function from the context
+        const result = await registerUser(formData.name, formData.email, formData.password);
+        if (result && result.success) {
+          // If registration is successful, switch to the login tab and clear the form
+          setIsLogin(true);
+          setFormData({ email: formData.email, password: '', name: '', confirmPassword: '' });
+        }
       }
+    } catch (error) {
+      // Errors are already handled with toast notifications inside the context
+      console.error("An unexpected error occurred:", error);
+    } finally {
       setIsLoading(false);
-    }, 1500);
+    }
   };
 
   const handleChange = (e) => {
@@ -156,6 +159,7 @@ export default function LoginPage() {
                   onChange={handleChange}
                   className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                   placeholder="Enter your full name"
+                  required
                 />
                 {errors.name && (
                   <p className="text-red-400 text-xs mt-1">{errors.name}</p>
@@ -176,6 +180,7 @@ export default function LoginPage() {
                 onChange={handleChange}
                 className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                 placeholder="user@interiit.tech"
+                required
               />
               {errors.email && (
                 <p className="text-red-400 text-xs mt-1">{errors.email}</p>
@@ -199,6 +204,7 @@ export default function LoginPage() {
                   onChange={handleChange}
                   className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                   placeholder="Enter your password"
+                  required
                 />
                 <button
                   type="button"
@@ -227,6 +233,7 @@ export default function LoginPage() {
                   onChange={handleChange}
                   className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                   placeholder="Confirm your password"
+                  required
                 />
                 {errors.confirmPassword && (
                   <p className="text-red-400 text-xs mt-1">{errors.confirmPassword}</p>
@@ -250,20 +257,7 @@ export default function LoginPage() {
               )}
             </button>
 
-            {/* Admin Credentials Info */}
-            {isLogin && (
-              <div className="mt-4 p-3 bg-purple-900/30 border border-purple-700/50 rounded-lg">
-                <p className="text-xs text-purple-200 font-semibold mb-1 flex items-center gap-1">
-                  <Shield className="w-3 h-3" />
-                  Admin Access
-                </p>
-                <p className="text-xs text-purple-300">
-                  Email: <span className="font-mono">{ADMIN_EMAIL}</span>
-                  <br />
-                  Password: <span className="font-mono">{ADMIN_PASSWORD}</span>
-                </p>
-              </div>
-            )}
+            {/* Admin Credentials Info is removed as it's not needed for production */}
 
             {/* Additional Info */}
             <div className="text-center text-xs text-gray-400 pt-2">
