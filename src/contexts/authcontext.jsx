@@ -2,10 +2,14 @@ import React, { createContext, useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
+// Create a single, configured axios instance for all API calls.
 const api = axios.create({
   baseURL: '/api/v1',
   withCredentials: true
 });
+
+// --- THIS IS THE FIX ---
+// Export the 'api' instance so other components like NestedComments can use it.
 export { api };
 
 const AuthContext = createContext();
@@ -24,8 +28,12 @@ export const AuthProvider = ({ children }) => {
           setIsAuthenticated(true);
         }
       } catch (error) {
-        console.log("User not logged in");
+        // This is an expected error if the user isn't logged in.
+        console.log("User not logged in.");
+        setUser(null);
+        setIsAuthenticated(false);
       } finally {
+        // This is crucial: it ensures the loading screen always disappears.
         setLoading(false);
       }
     };
@@ -47,11 +55,10 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // --- THIS FUNCTION IS NOW CORRECTED ---
-  const registerUser = async (name, email, password, avatar) => {
+  const registerUser = async (name, email, password, avatar, isAdminRegister) => {
     try {
-      // It now correctly sends the avatar in the request body
-      const { data } = await api.post('/auth/register', { name, email, password, avatar });
+      // It now correctly sends the isAdminRegister flag in the request body.
+      const { data } = await api.post('/auth/register', { name, email, password, avatar, isAdminRegister });
       if (data.success) {
         toast.success("Registration successful! Please check your email for an OTP.");
         return { success: true };
@@ -64,19 +71,20 @@ export const AuthProvider = ({ children }) => {
 
   const verifyOtp = async (email, otp) => {
     try {
-      const { data } = await api.post('/auth/verify-otp', { email, otp });
-      if (data.success) {
-        return { success: true };
-      }
+        const { data } = await api.post('/auth/verify-otp', { email, otp });
+        if (data.success) {
+          return { success: true };
+        }
     } catch (error) {
-      toast.error(error.response?.data?.message || 'OTP verification failed!');
-      return { success: false };
+        toast.error(error.response?.data?.message || 'OTP verification failed!');
+        return { success: false };
     }
   };
 
   const logoutUser = async () => {
     try {
-      await api.post('/auth/logout');
+      // Use POST to match the backend route
+      await api.post('/auth/logout'); 
       setUser(null);
       setIsAuthenticated(false);
       toast.success('Logged out successfully');

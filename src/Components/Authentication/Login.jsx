@@ -44,8 +44,6 @@ export default function LoginPage() {
 
     if (!isLogin) {
       if (!formData.name.trim()) newErrors.name = 'Full name is required';
-      
-      // Admin registration has different password rules
       if (isAdminRegister) {
         if (!formData.password) newErrors.password = 'Admin password is required.';
       } else {
@@ -71,9 +69,9 @@ export default function LoginPage() {
       if (isLogin) {
         await loginUser(formData.email, formData.password);
       } else {
-        // Use the specific password "123456" for admin registration check
-        const registrationPassword = isAdminRegister ? '123456' : formData.password;
-        const result = await registerUser(formData.name, formData.email, registrationPassword, formData.avatar);
+        // --- THIS IS THE FIX ---
+        // Pass the 'isAdminRegister' state as the fifth argument.
+        const result = await registerUser(formData.name, formData.email, formData.password, formData.avatar, isAdminRegister);
         if (result && result.success) {
           navigate('/verify-otp', { state: { email: formData.email } });
         }
@@ -131,7 +129,8 @@ export default function LoginPage() {
                 {isAdminRegister && !isLogin ? 'Admin Password' : 'Password'}
               </label>
               <div className="relative">
-                <input type={showPassword ? 'text' : 'password'} name="password" value={formData.password} onChange={handleChange} className={`w-full px-4 py-3 bg-slate-800/50 border rounded-lg text-white ${isAdminRegister && !isLogin ? 'border-purple-500' : 'border-slate-700'}`} placeholder={isAdminRegister && !isLogin ? 'Admin password is "123456"' : 'Enter your password' } />
+                {/* --- THIS IS THE FIX for the placeholder --- */}
+                <input type={showPassword ? 'text' : 'password'} name="password" value={formData.password} onChange={handleChange} className={`w-full px-4 py-3 bg-slate-800/50 border rounded-lg text-white ${isAdminRegister && !isLogin ? 'border-purple-500' : 'border-slate-700'}`} placeholder={isAdminRegister && !isLogin ? 'Enter admin password' : 'Enter your password' } />
                 <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">{showPassword ? <EyeOff /> : <Eye />}</button>
               </div>
               {errors.password && <p className="text-red-400 text-xs mt-1">{errors.password}</p>}
