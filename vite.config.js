@@ -8,7 +8,7 @@ export default defineConfig({
     proxy: {
       // This forwards any request starting with '/api' to your backend
       '/api': {
-        target: 'http://localhost:5000', // Your backend server URL
+        target: 'https://interiit-backend-5bmf.onrender.com/', // Your backend server URL
         changeOrigin: true,
       },
     }
