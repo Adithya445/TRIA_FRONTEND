@@ -28,7 +28,7 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isAdminRegister, setIsAdminRegister] = useState(false);
 
-  const ALLOWED_DOMAINS = ['interiit.tech', 'iit.ac.in', 'iitkgp.ac.in', 'kgpian.iitkgp.ac.in'];
+  const ALLOWED_DOMAINS = ['interiit.tech', 'iit.ac.in', 'iitkgp.ac.in', 'kgpian.iitkgp.ac.in','gmail.com'];
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -73,7 +73,9 @@ export default function LoginPage() {
         // Pass the 'isAdminRegister' state as the fifth argument.
         const result = await registerUser(formData.name, formData.email, formData.password, formData.avatar, isAdminRegister);
         if (result && result.success) {
-          navigate('/verify-otp', { state: { email: formData.email } });
+           toast.success("Registration complete. Please log in with your new account.");
+         setIsLogin(true);
+         setFormData(prev => ({ ...prev, password: '', confirmPassword: '' }));
         }
       }
     } catch (error) {
