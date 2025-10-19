@@ -2,9 +2,12 @@ import React, { createContext, useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
-// Create a single, configured axios instance for all API calls.
+// This line reads the variable from your .env.local file.
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+
 const api = axios.create({
-  baseURL: '/api/v1',
+  // And this line uses it to configure Axios.
+  baseURL: `${API_BASE_URL}/api/v1`, 
   withCredentials: true
 });
 
