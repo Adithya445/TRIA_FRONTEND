@@ -4,7 +4,7 @@ import { useAuth } from '../../contexts/authcontext';
 import { api } from '../../contexts/authcontext';
 import toast from 'react-hot-toast';
 
-// --- Reusable Sub-components ---
+// --- Reusable Sub-components (No changes here) ---
 
 const Header = ({ user }) => {
   const { logoutUser } = useAuth();
@@ -90,14 +90,23 @@ const Comment = ({ comment, onReply, onVote, onDelete, currentUser, depth = 0 })
     }
     return "just now";
   };
-
+  
+  // --- CHANGE #1: Logic to add @mention format ---
+  // If this comment is a reply to another comment (i.e., it has a parent_id),
+  // then any new reply to IT will be formatted with an @mention.
   const handleReplySubmit = (text) => {
-    onReply(text, comment._id);
+    let replyText = text;
+    if (comment.parent_id) { 
+        const repliedToName = comment.user_id?.name || 'User';
+        replyText = `@${repliedToName} ${text}`;
+    }
+    onReply(replyText, comment._id);
     setShowReplyInput(false);
   };
   
   return (
-    <div className={`mt-4 ${depth > 0 ? 'ml-4 md:ml-8' : ''}`}>
+    // The component itself has no margin. Indentation is handled by the replies container below.
+    <div className="mt-4">
       <div className="bg-slate-800/30 backdrop-blur-sm rounded-xl p-3 md:p-5 shadow-lg border border-slate-700/50">
         <div className="flex items-start justify-between mb-3">
           <div className="flex items-center gap-3">
@@ -115,7 +124,7 @@ const Comment = ({ comment, onReply, onVote, onDelete, currentUser, depth = 0 })
         {!isCollapsed && (
           <>
             <p className="text-gray-300 mb-4 ml-13 leading-relaxed">{comment.text}</p>
-            <div className="flex items-center gap-2 md:gap-4 ml-13 flex-wrap">
+            <div className="flex items-center gap-3 md:gap-4 ml-13 flex-wrap">
               <button onClick={() => onVote(comment._id, 1)} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-700/30 text-gray-400 hover:text-green-400 transition-colors"><ThumbsUp className="w-4 h-4" /> {comment.upvotes}</button>
               <button onClick={() => onVote(comment._id, -1)} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-700/30 text-gray-400 hover:text-red-400 transition-colors"><ThumbsDown className="w-4 h-4" /> {comment.downvotes}</button>
               <button onClick={() => setShowReplyInput(!showReplyInput)} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-700/30 text-gray-400 hover:text-blue-400 transition-colors"><MessageSquare className="w-4 h-4" /> Reply</button>
@@ -124,7 +133,11 @@ const Comment = ({ comment, onReply, onVote, onDelete, currentUser, depth = 0 })
             {showReplyInput && <div className="mt-4 ml-13"><CommentInput onSubmit={handleReplySubmit} placeholder="Write a reply..." autoFocus={true} /></div>}
             
             {comment.replies && comment.replies.length > 0 && (
-              <div className="border-l-2 border-purple-500/30 pl-2 ml-4 mt-4">
+              // --- CHANGE #2: Logic to limit indentation to one level ---
+              // Margin is only applied if the current comment is a root comment (depth === 0).
+              // All further nested reply containers will have depth > 0 and will NOT get an
+              // additional margin, making them stack vertically within this one indented block.
+              <div className={`border-l-2 border-purple-500/30 pl-4 mt-4 ${depth === 0 ? 'ml-4 md:ml-8' : ''}`}>
                 {comment.replies.map(reply => <Comment key={reply._id} comment={reply} onReply={onReply} onVote={onVote} onDelete={onDelete} currentUser={currentUser} depth={depth + 1} />)}
               </div>
             )}
@@ -134,6 +147,8 @@ const Comment = ({ comment, onReply, onVote, onDelete, currentUser, depth = 0 })
     </div>
   );
 };
+
+// --- Other components (CommentThread, SortingControls, etc.) have no changes ---
 
 const CommentThread = ({ comments, ...handlers }) => {
   const buildTree = (list) => {
@@ -237,4 +252,3 @@ export default function NestedComments() {
     </div>
   );
 };
-
