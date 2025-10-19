@@ -60,13 +60,14 @@ export const AuthProvider = ({ children }) => {
 
   const registerUser = async (name, email, password, avatar, isAdminRegister) => {
     try {
-      // It now correctly sends the isAdminRegister flag in the request body.
       const { data } = await api.post('/auth/register', { name, email, password, avatar, isAdminRegister });
       if (data.success) {
         toast.success("Registration successful! Please check your email for an OTP.");
         return { success: true };
       }
     } catch (error) {
+      // ADD THIS LINE TO SEE THE FULL ERROR IN THE BROWSER CONSOLE
+      console.error("💥 REGISTRATION CATCH BLOCK ERROR:", error);
       toast.error(error.response?.data?.message || 'Registration failed!');
       return { success: false };
     }

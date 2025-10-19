@@ -69,15 +69,11 @@ export default function LoginPage() {
       if (isLogin) {
         await loginUser(formData.email, formData.password);
       } else {
-        // --- THIS IS THE FIX ---
-        // Pass the 'isAdminRegister' state as the fifth argument.
-        const result = await registerUser(formData.name, formData.email, formData.password, formData.avatar, isAdminRegister);
-        if (result && result.success) {
-           toast.success("Registration complete. Please log in with your new account.");
-         setIsLogin(true);
-         setFormData(prev => ({ ...prev, password: '', confirmPassword: '' }));
-        }
-      }
+    const result = await registerUser(formData.name, formData.email, formData.password, formData.avatar, isAdminRegister);
+    if (result && result.success) {
+        navigate('/verify-otp', { state: { email: formData.email } });
+    }
+}
     } catch (error) {
       console.error("Submit error:", error);
     } finally {
