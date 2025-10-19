@@ -70,7 +70,12 @@ export default function LoginPage() {
         await loginUser(formData.email, formData.password);
       } else {
     const result = await registerUser(formData.name, formData.email, formData.password, formData.avatar, isAdminRegister);
+    
+    // ADD THIS LINE TO SEE THE RESULT
+    console.log("📝 Registration result received in Login component:", result);
+
     if (result && result.success) {
+        console.log("Navigating to OTP page...");
         navigate('/verify-otp', { state: { email: formData.email } });
     }
 }
