@@ -1,0 +1,67 @@
+.form-card {
+  background-color: #ffffff;
+  padding: 20px 25px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e0e0e0;
+}
+
+.form-card h2 {
+  margin-top: 0;
+  text-align: center;
+  color: #34495e;
+}
+
+.add-contact-form {
+  display: flex;
+  flex-wrap: wrap; /* Allows wrapping on small screens */
+  gap: 15px;
+  align-items: flex-end; /* Aligns button with inputs */
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 200px; /* Inputs will grow and shrink */
+}
+
+.form-group label {
+  margin-bottom: 5px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.form-group input {
+  padding: 10px;
+  font-size: 0.95rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  height: 40px; /* Set a fixed height */
+}
+
+.add-btn {
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+  background-color: #27ae60;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  height: 40px; /* Match input height */
+  flex-basis: 150px; /* Give button a base width */
+  flex-grow: 1; /* Allow to grow on small screens */
+}
+
+.add-btn:hover {
+  background-color: #219d55;
+}
+
+/* On wider screens, don't let button grow as much */
+@media (min-width: 768px) {
+  .add-btn {
+    flex-grow: 0;
+  }
+}
