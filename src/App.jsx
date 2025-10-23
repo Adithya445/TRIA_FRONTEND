@@ -6,11 +6,11 @@ import './App.css';
 
 // Mock data to simulate fetching from an API
 const mockContacts = [
-  { id: 1, name: 'Alice Smith', email: 'alice@example.com', phone: '+1 123-456-7890' },
-  { id: 2, name: 'Bob Johnson', email: 'bob@example.com', phone: '+44 20 7946 0958' },
-  { id: 3, name: 'Charlie Brown', email: 'charlie@example.com', phone: '+91 98765 43210' },
-  { id: 4, name: 'Diana Prince', email: 'diana@example.com', phone: '+1 456-789-0123' },
-  { id: 5, name: 'Ethan Hunt', email: 'ethan@example.com', phone: '+33 1 23 45 67 89' },
+  { id: 1, name: 'Sujal', email: 'sujal@example.com', phone: '+1 123-456-7890' },
+  { id: 2, name: 'Armaan', email: 'Armaan@example.com', phone: '+44 20 7946 0958' },
+  { id: 3, name: 'Jose', email: 'Jose@example.com', phone: '+91 98765 43210' },
+  { id: 4, name: 'Aditi', email: 'aditi@example.com', phone: '+1 456-789-0123' },
+  { id: 5, name: 'Jahangir', email: 'Jahangir@example.com', phone: '+33 1 23 45 67 89' },
 ];
 
 function App() {
