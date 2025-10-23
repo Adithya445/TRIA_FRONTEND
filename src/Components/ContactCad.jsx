@@ -14,19 +14,26 @@ const getInitials = (name) => {
   );
 };
 
-function ContactCard({ contact }) {
+// Accept 'onDelete' as a prop
+function ContactCard({ contact, onDelete }) {
   const initials = getInitials(contact.name);
 
   return (
     <div className="contact-card">
+      {/* --- NEW DELETE BUTTON --- */}
+      <button className="delete-btn" onClick={() => onDelete(contact.id)}>
+        &times;
+      </button>
+
       <div className="contact-avatar">
         <span>{initials}</span>
       </div>
       <div className="contact-details">
         <h3 className="contact-name">{contact.name}</h3>
-        <p className="contact-info email">{contact.email}</p>
-        {contact.phone && (
-          <p className="contact-info phone">{contact.phone}</p>
+        {/* Swapped order to show phone first, and check if email exists */}
+        <p className="contact-info phone">{contact.phone}</p>
+        {contact.email && (
+          <p className="contact-info email">{contact.email}</p>
         )}
       </div>
     </div>

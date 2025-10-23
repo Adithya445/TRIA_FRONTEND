@@ -5,13 +5,13 @@ This project is a simplified contact list application built with React, as per t
 It implements all the core features:
 * Viewing a list of contacts
 * Searching contacts by name
-* (Optional) Adding a new contact to the list
+* Adding a new contact to the list
 
 ## Deployed Application
 
 **Link:** `https://tria-frontend.vercel.app/`
 
-*(Replace this line with your public URL from Vercel or Netlify after you deploy.)*
+
 
 ## Source Code
 

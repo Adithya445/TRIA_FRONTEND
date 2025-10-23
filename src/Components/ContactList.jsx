@@ -1,8 +1,9 @@
 import React from 'react';
-import ContactCard from './ContactCad';
+import ContactCard from './ContactCard';
 import './ContactList.css';
 
-function ContactList({ contacts, isLoading }) {
+// Accept onDeleteContact as a prop
+function ContactList({ contacts, isLoading, onDeleteContact }) {
   if (isLoading) {
     return <div className="loading-spinner"></div>;
   }
@@ -19,7 +20,12 @@ function ContactList({ contacts, isLoading }) {
   return (
     <div className="contact-list">
       {contacts.map((contact) => (
-        <ContactCard key={contact.id} contact={contact} />
+        // Pass the delete handler to each card
+        <ContactCard 
+          key={contact.id} 
+          contact={contact} 
+          onDelete={onDeleteContact} 
+        />
       ))}
     </div>
   );

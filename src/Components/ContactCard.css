@@ -8,12 +8,35 @@
   align-items: center;
   gap: 20px;
   transition: box-shadow 0.2s, transform 0.2s;
+  position: relative; /* --- ADDED THIS LINE --- */
 }
 
 .contact-card:hover {
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
   transform: translateY(-2px);
 }
+
+/* --- NEW STYLES FOR DELETE BUTTON --- */
+.delete-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: transparent;
+  border: none;
+  color: #95a5a6; /* Light gray */
+  font-size: 1.5rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.2s;
+  padding: 0;
+  line-height: 1;
+}
+
+.delete-btn:hover {
+  color: #e74c3c; /* Red on hover */
+}
+/* --- END OF NEW STYLES --- */
+
 
 .contact-avatar {
   width: 60px;
@@ -30,7 +53,7 @@
 }
 
 .contact-details {
-  overflow: hidden; /* Prevents long text from breaking layout */
+  overflow: hidden; 
 }
 
 .contact-name {
@@ -40,6 +63,8 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  /* Make room for delete button */
+  padding-right: 20px; 
 }
 
 .contact-info {
@@ -49,11 +74,10 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  padding-left: 24px; /* Space for icon */
+  padding-left: 24px; 
   position: relative;
 }
 
-/* Icons using pseudo-elements */
 .contact-info.email::before {
   content: '📧';
   position: absolute;
